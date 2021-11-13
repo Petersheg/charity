@@ -7,7 +7,7 @@ const app = require('./app');
 const URL = process.env.DB_LOCAL;
 const DB_ATLAST = process.env.DB_ATLAST
 .replace(`<PASSWORD>`,process.env.DB_PASS)
-.replace(`<DB_NAME>`,process.env.DB_NAME);
+.replace(`<DB_NAME>`,process.env.DB_NAME)
 
 const options = {
     useNewUrlParser: true,
