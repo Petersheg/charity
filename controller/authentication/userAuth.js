@@ -5,6 +5,7 @@ const User = require('../../model/userModel');
 const catchAsync = require('../../utility/catchAsync');
 const OperationalError = require('../../utility/operationalError');
 const sendEmail = require('../../utility/email')
+const template = require('../../utility/emails/templates');
 
 const generateJWT = (id)=>{
     return jwt.sign({id}, process.env.JWT_SECRET,{
@@ -38,11 +39,29 @@ exports.userSignUp = catchAsync(
             const oneTimeToken = user.generateOneTimeToken(62 * 60) // 3 days validity
             await user.save({validateBeforeSave : false}); //save changes to model
 
+            // Send token to the provided email
+            const activateURL = `${process.env.REDIRECT_URL}/user/verify_email/${oneTimeToken}`;
+
+            let emailObj = {
+                user,
+                greeting : "WELCOME",
+                heading : `KINDLY VERIFY YOUR EMAIL.`,
+
+                message : `A warm welcome to PICKORDER, We are glad to have you here,
+                            you have taken the first step, complete the next by verifying your 
+                            email address to complete your registration.
+                            Kindly click on the verify button bellow to complete your registration.`,
+
+                link : activateURL,
+                buttonText : "VERIFY",
+        
+            }
+
+            const html =  template.generateTemplate(emailObj)
+
+
             try{
-                const activateURL = `${process.env.REDIRECT_URL}/user/verify_email/${oneTimeToken}`;
-                const html = `<p> Kindly follow this <a href="${activateURL}">activation link</a>to activate your account</p>
-                <p> kindly note that this is only valid for just 3 days </p>`
-    
+
                 await sendEmail({
                     email : user.userEmail,
                     subject : 'Password Reset Email (Expires After 3 days)',
@@ -190,13 +209,26 @@ exports.forgotPassword = catchAsync(
         // set password reset Token
         const oneTimeToken = user.generateOneTimeToken(30); //30 minutes validity
         await user.save({validateBeforeSave : false});
-        console.log(oneTimeToken)
 
         // Send token to the provided email
+        const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/${oneTimeToken}`;
+
+        let emailObj = {
+            user,
+            greeting : "Hello",
+            heading : `RESET YOUR PASSWORD.`,
+    
+            message : `You have requested to reset your email, Kindly click of the reset button bellow to
+            reset. Kindly ignore if you did not request a password reset.`,
+    
+            link : resetURL,
+            buttonText : "RESET",
+    
+        }
+
+        const html =  template.generateTemplate(emailObj)
+
         try{
-            const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/${oneTimeToken}`;
-            const html = `<p> Kindly follow this <a href="${resetURL}">reset link</a>to reset your password </p>
-                <p>If you did not trigger this kindly ignore, kindly note that this is only valid for just 30 minutes</p>`
 
             await sendEmail({
                 email : user.userEmail,

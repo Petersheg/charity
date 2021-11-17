@@ -87,7 +87,7 @@ exports.generateTemplate = (emailObj) => {
                         <td valign="top" align="center" style="padding:0;Margin:0;width:520px"> 
                         <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                             <tr style="border-collapse:collapse"> 
-                            <td align="center" style="padding:0;Margin:0;font-size:0px"><a href="https://pickorder.vercel.app" target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px"><img src="https://uefgxs.stripocdn.email/content/guids/CABINET_dd87ac8c6ee6e89aa61580e170d0004e/images/checkmanlogo.PNG" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="100"></a></td> 
+                            <td align="center" style="padding:0;Margin:0;font-size:0px"><a href="https://pickorder.vercel.app" target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px"><img src="https://i.ibb.co/FsyKKGf/Pick-Order-Logo-1-2x.png" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="100"></a></td> 
                             </tr> 
                         </table></td> 
                         </tr> 
@@ -101,7 +101,7 @@ exports.generateTemplate = (emailObj) => {
                 <td align="center" style="padding:0;Margin:0"> 
                 <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#333333;width:600px" cellspacing="0" cellpadding="0" bgcolor="#333333" align="center"> 
                     <tr style="border-collapse:collapse"> 
-                    <td style="Margin:0;padding-top:40px;padding-bottom:40px;padding-left:40px;padding-right:40px;background-image:url(https://uefgxs.stripocdn.email/content/guids/CABINET_dd87ac8c6ee6e89aa61580e170d0004e/images/hero3.jpg);background-repeat:no-repeat;background-position:center -45px" align="left" background="https://uefgxs.stripocdn.email/content/guids/CABINET_dd87ac8c6ee6e89aa61580e170d0004e/images/hero3.jpg"> 
+                    <td style="Margin:0;padding-top:40px;padding-bottom:40px;padding-left:40px;padding-right:40px;background-image:url(https://i.ibb.co/LxnxN6Z/pickorder.jpg);background-repeat:no-repeat;background-position:center -45px" align="left" background="https://i.ibb.co/LxnxN6Z/pickorder.jpg"> 
                     <table width="80%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                         <tr style="border-collapse:collapse"> 
                         <td valign="top" align="center" style="padding:0;Margin:0;width:520px"> 
