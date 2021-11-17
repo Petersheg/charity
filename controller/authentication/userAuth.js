@@ -39,14 +39,14 @@ exports.userSignUp = catchAsync(
             await user.save({validateBeforeSave : false}); //save changes to model
 
             try{
-                const resetURL = `${req.protocol}//${req.get('host')}/api/v1/user/verify_email/${oneTimeToken}`;
-                const message = `Kindly follow this link ${resetURL} to reset your password
-                \n If you did not trigger this kindly ignore`
+                const activateURL = `${process.env.REDIRECT_URL}/user/verify_email/${oneTimeToken}`;
+                const html = `<p> Kindly follow this <a href="${activateURL}">activation link</a>to activate your account</p>
+                <p> kindly note that this is only valid for just 3 days </p>`
     
                 await sendEmail({
                     email : user.userEmail,
-                    subject : 'Password Reset Email (Expires After Ten minute)',
-                    message
+                    subject : 'Password Reset Email (Expires After 3 days)',
+                    html
                 });
 
                 res.status(200).json({
@@ -195,13 +195,13 @@ exports.forgotPassword = catchAsync(
         // Send token to the provided email
         try{
             const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/${oneTimeToken}`;
-            const message = `Kindly follow this link ${resetURL} to reset your password
-            \n If you did not trigger this kindly ignore`
+            const html = `<p> Kindly follow this <a href="${resetURL}">reset link</a>to reset your password </p>
+                <p>If you did not trigger this kindly ignore, kindly note that this is only valid for just 30 minutes</p>`
 
             // await sendEmail({
             //     email : user.userEmail,
             //     subject : 'Password Reset Email (Expires After Thirty minute)',
-            //     message
+            //     html
             // });
 
             res.status(200).json({
