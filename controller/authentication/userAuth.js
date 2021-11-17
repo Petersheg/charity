@@ -29,13 +29,13 @@ exports.userSignUp = catchAsync(
         const sendToClient = _.pick(
             user,
             ['userFullName','userEmail','userName','userMobile','userFirstAddress',
-            'userSecondAddress','userState','userCity']);
+            'userSecondAddress','userState','userCity','userRole']);
 
         const token = generateJWT(user._id);
 
         if (token) {
 
-            const oneTimeToken = user.generateOneTimeToken(10) // 10 minutes
+            const oneTimeToken = user.generateOneTimeToken(62 * 60) // 3 days validity
             await user.save({validateBeforeSave : false}); //save changes to model
 
             try{
@@ -188,20 +188,21 @@ exports.forgotPassword = catchAsync(
         };
 
         // set password reset Token
-        const oneTimeToken = user.forgetPasswordToken();
+        const oneTimeToken = user.generateOneTimeToken(30); //30 minutes validity
         await user.save({validateBeforeSave : false});
+        console.log(oneTimeToken)
 
         // Send token to the provided email
         try{
-            const resetURL = `${req.protocol}//${req.get('host')}/api/v1/user/reset_password/${oneTimeToken}`;
+            const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/${oneTimeToken}`;
             const message = `Kindly follow this link ${resetURL} to reset your password
             \n If you did not trigger this kindly ignore`
 
-            await sendEmail({
-                email : user.userEmail,
-                subject : 'Password Reset Email (Expires After Ten minute)',
-                message
-            });
+            // await sendEmail({
+            //     email : user.userEmail,
+            //     subject : 'Password Reset Email (Expires After Thirty minute)',
+            //     message
+            // });
 
             res.status(200).json({
                 status : 'success',
@@ -211,7 +212,7 @@ exports.forgotPassword = catchAsync(
         }catch(err){
 
             user.oneTimeToken = undefined,
-            user.passwordTokenExpires = undefined;
+            user.oneTimeTokenExpires = undefined;
 
             // Save your data after modification
             await user.save({ validateBeforeSave : false });
@@ -222,10 +223,44 @@ exports.forgotPassword = catchAsync(
 );
 
 exports.resetPassword = catchAsync(
-    async (req, res, next) =>{
+    async (req,res, next)=> {
+
+        const plainResetToken = req.params.oneTimeToken;
+        const hashedResetToken = crypto.createHash('sha256').update(plainResetToken).digest('hex');
+
+        const message = "Password was reset successfully";
+        
+        const user = await User.findOne({
+            oneTimeToken : hashedResetToken,
+            oneTimeTokenExpires : {$gt  : Date.now() }
+        });
+
+        if(!user){
+            return next(new OperationalError('Invalid token', 404));
+        }
+
+        const {password, confirmPassword} = req.body;
+
+        user.password = password;
+        user.confirmPassword = confirmPassword;
+
+        user.oneTimeToken = undefined;
+        user.oneTimeTokenExpires = undefined;
+        await user.save();
+
+        // return only data needed by client
+        const sendToClient = _.pick(
+            user,
+            ['userFullName','userEmail','userName','userMobile','userFirstAddress',
+            'userSecondAddress','userState','userCity','userRole']);
+
         res.status(200).json({
             status : 'success',
-            message : 'Under still under construction'
+            message,
+            data : {
+                user:sendToClient 
+            }
         })
     }
+
 )

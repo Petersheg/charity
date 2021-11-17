@@ -4,17 +4,23 @@ dotenv.config({path:'./config.env'});
 const app = require('./app');
 
 // connect to DB
-const URL = process.env.DB_LOCAL;
-const DB_ATLAST = process.env.DB_ATLAST
-.replace(`<PASSWORD>`,process.env.DB_PASS)
-.replace(`<DB_NAME>`,process.env.DB_NAME)
+let DB_CONNECT;
+
+if (process.env.NODE_ENV === "development") {
+    DB_CONNECT = process.env.DB_LOCAL;
+    console.log(process.env.DB_ATLAST)
+}else{
+    DB_CONNECT = process.env.DB_ATLAST
+    .replace(`<PASSWORD>`,process.env.DB_PASS)
+    .replace(`<DB_NAME>`,process.env.DB_NAME);
+}
 
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }
 
-mongoose.connect(DB_ATLAST,options)
+mongoose.connect(DB_CONNECT,options)
 .then(()=>{
     console.log('Connected to Database')
 })

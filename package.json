@@ -4,7 +4,8 @@
   "description": "Jonas Tutoria",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "start-dev": "nodemon server.js"
   },
   "author": "Cipher",
   "license": "ISC",

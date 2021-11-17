@@ -7,7 +7,7 @@ router.post('/signup',userAuth.userSignUp);
 
 router.post('/forgot_password',userAuth.forgotPassword);
 router.patch('/verify_email/:oneTimeToken',userAuth.verifyEmail);
-router.patch('/reset_password/:oneTimeToken',userAuth.resetPassword);
+router.post('/reset_password/:oneTimeToken',userAuth.resetPassword);
 
 
 module.exports = router;
