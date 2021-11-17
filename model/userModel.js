@@ -47,13 +47,11 @@ const userSchema = new Schema({
     },
 
     userState: {
-        type: String,
-        required: [true, 'You must provide a state']
+        type: String
     },
 
     userCity: {
-        type: String,
-        required: [true, 'You must provide a city']
+        type: String
     },
 
     emailConfirmationStatus : {
