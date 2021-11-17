@@ -198,11 +198,11 @@ exports.forgotPassword = catchAsync(
             const html = `<p> Kindly follow this <a href="${resetURL}">reset link</a>to reset your password </p>
                 <p>If you did not trigger this kindly ignore, kindly note that this is only valid for just 30 minutes</p>`
 
-            // await sendEmail({
-            //     email : user.userEmail,
-            //     subject : 'Password Reset Email (Expires After Thirty minute)',
-            //     html
-            // });
+            await sendEmail({
+                email : user.userEmail,
+                subject : 'Password Reset Email (Expires After Thirty minute)',
+                html
+            });
 
             res.status(200).json({
                 status : 'success',
