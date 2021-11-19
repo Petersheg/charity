@@ -19,6 +19,10 @@ const handleJWTExpiredError = (err) => {
     return new OperationalError('Token expired, kindly re-login',401);
 }
 
+const handleMulterError = (err) => {
+    return new OperationalError(err.message,401);
+}
+
 const developmentError = (err,res)=>{
 
     if(err.isOperational){
@@ -63,6 +67,10 @@ module.exports = (err,req,res,next) => {
 
         if(err.name === 'TokenExpiredError'){
             err = handleJWTExpiredError(err);
+        }
+
+        if(err.name === 'MulterError'){
+            err = handleMulterError(err)
         }
 
         developmentError(err,res);

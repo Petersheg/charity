@@ -6,6 +6,7 @@ const catchAsync = require('../../utility/catchAsync');
 const OperationalError = require('../../utility/operationalError');
 const sendEmail = require('../../utility/email')
 const template = require('../../utility/emails/templates');
+const exp = require('constants');
 
 const generateJWT = (id)=>{
     return jwt.sign({id}, process.env.JWT_SECRET,{
@@ -29,7 +30,7 @@ exports.userSignUp = catchAsync(
         // return only data needed by client
         const sendToClient = _.pick(
             user,
-            ['userFullName','userEmail','userName','userMobile','userFirstAddress',
+            ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
             'userSecondAddress','userState','userCity','userRole']);
 
         const token = generateJWT(user._id);
@@ -122,7 +123,7 @@ exports.verifyEmail = catchAsync(
             return next( new OperationalError('Something went wrong, kindly try again',500));
         }
     }
-)
+);
 
 exports.login = catchAsync(
     async (req,res,next) => {
@@ -136,6 +137,7 @@ exports.login = catchAsync(
 
         // If password and email is provided, fetch user and vet password
         const user = await User.findOne({userEmail : email}).select('+password');
+        console.log(user.id);
 
         // if password and email does not exist then throw error 
         if(!user || !await user.checkPassword(password,user.password)){
@@ -149,7 +151,7 @@ exports.login = catchAsync(
         // filter what client see
         const sendToClient = _.pick(
             user,
-            ['userFullName','userEmail','userName','userMobile','userFirstAddress',
+            ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
             'userSecondAddress','userState','userCity']);
 
         const token = generateJWT(user._id);
@@ -164,38 +166,6 @@ exports.login = catchAsync(
         });
     }
 );
-
-exports.secureRoute = catchAsync(
-    async (req,res,next)=>{
-        const headers = req.headers?.authorization;
-
-        if(!headers || !headers.startsWith('Bearer')){
-           next(new OperationalError('You dont have access to this page'));
-        }
-
-        let token = headers?.split(' ')[1];
-
-        const data = jwt.verify(token,process.env.JWT_SECRET);
-
-        // Token can still be valid but the bearer might have been deleted
-        // Double check if user exist along with the token;
-
-        const validUser = await User.findById(data.id);
-
-        if(!validUser){
-            return next(new OperationalError('User not found',400));
-        };
-
-        // If user change password after token has being issue then throw error
-        if(validUser.rejectOnPasswordChangeAfterTokenIssued(data.iat)){
-            return next(new OperationalError('You just change your password, kindly re-login to access this page',401))
-        };
-
-        // Grant Access if no error
-        req.user = validUser;
-        next();
-    }
-)
 
 exports.forgotPassword = catchAsync(
     async (req, res, next) => {
@@ -295,4 +265,34 @@ exports.resetPassword = catchAsync(
         })
     }
 
+);
+
+exports.updateSelf= catchAsync(
+
+    async(req,res,next)=>{
+
+        const userId = req.params.userId;
+        const user = req.user;
+
+        if(userId != user._id){
+            return next(new OperationalError("user not found",400));
+        }
+
+        if(req.body.password || req.body.confirmPassword){
+            return next(new OperationalError("You can not update your password using this route"));
+        }
+
+        const updateUser = await User.findByIdAndUpdate(user.id, req.body, {
+            new : true,
+            runVAlidators: true
+        });
+
+        res.status(200).json({
+            status: "success",
+            message: "Detail(s) updated successfully",
+            data: {
+                updateUser
+            }
+        });
+    }
 )

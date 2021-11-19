@@ -59,6 +59,11 @@ const userSchema = new Schema({
         default : false
     },
 
+    profilePicture:{
+        type: Buffer,
+        select: false
+    },
+
     password :{
         type : String,
         required : [true,'password is required'],
