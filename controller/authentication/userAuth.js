@@ -281,16 +281,22 @@ exports.updateSelf= catchAsync(
             return next(new OperationalError("You can not update your password using this route"));
         }
 
-        const updateUser = await User.findByIdAndUpdate(user.id, req.body, {
+        const updatedUser = await User.findByIdAndUpdate(user.id, req.body, {
             new : true,
             runVAlidators: true
         });
+
+        // return only data needed by client
+        const sendToClient = _.pick(
+            updatedUser,
+            ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
+            'userSecondAddress','userState','userCity','userRole']);
 
         res.status(200).json({
             status: "success",
             message: "Detail(s) updated successfully",
             data: {
-                updateUser
+                user:sendToClient
             }
         });
     }
