@@ -9,7 +9,7 @@ exports.secureRoute = catchAsync(
         const headers = req.headers?.authorization;
 
         if(!headers || !headers.startsWith('Bearer')){
-           next(new OperationalError('You dont have access to this page'));
+           return next(new OperationalError('You dont have access to this page'));
         }
 
         let token = headers?.split(' ')[1];
