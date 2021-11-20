@@ -137,7 +137,6 @@ exports.login = catchAsync(
 
         // If password and email is provided, fetch user and vet password
         const user = await User.findOne({userEmail : email}).select('+password');
-        console.log(user.id);
 
         // if password and email does not exist then throw error 
         if(!user || !await user.checkPassword(password,user.password)){
