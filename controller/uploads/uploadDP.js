@@ -6,7 +6,7 @@ const OperationalError = require('../../utility/operationalError');
 exports.uploadDP = catchAsync(
     async (req, res) => {
 
-        const buffer = await sharp(req.file.buffer).resize({width: 500, height: 800}).png().toBuffer();
+        const buffer = await sharp(req.file.buffer).png().toBuffer();
 
         if(!buffer) {
             return next(new OperationalError("something went wrong",400));

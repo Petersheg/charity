@@ -8,7 +8,6 @@ let DB_CONNECT;
 
 if (process.env.NODE_ENV === "development") {
     DB_CONNECT = process.env.DB_LOCAL;
-    console.log(process.env.DB_ATLAST)
 }else{
     DB_CONNECT = process.env.DB_ATLAST
     .replace(`<PASSWORD>`,process.env.DB_PASS)
@@ -33,5 +32,4 @@ const port = process.env.PORT || 2010;
 // connect to server
 app.listen(port,()=>{
     console.log(`app running on port ${port}...`);
-    console.log(`${process.env.NODE_ENV}`);
 });

@@ -8,7 +8,6 @@ exports.upload = multer({
 
     fileFilter(_,file,cb){
         if(!file.originalname.match(/\.(png|jpg|img|PNG|JPG|IMG)/)){
-            console.log(file);
             return cb(new Error("Kindly select a right format file"));
         }
 
