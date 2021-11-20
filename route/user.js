@@ -14,7 +14,7 @@ router.post('/forgot_password',userAuth.forgotPassword);
 router.patch('/verify_email/:oneTimeToken',userAuth.verifyEmail);
 router.post('/reset_password/:oneTimeToken',userAuth.resetPassword);
 
-router.post('/profile_picture',secureRoute, upload.single('profilePic'),uploadCon.uploadDP);
+router.post('/profile_picture',secureRoute, upload.single('profilePic'),secureRoute,uploadCon.uploadDP);
 router.get('/profile_picture',secureRoute,uploadCon.getDP);
 router.post('/:userId/update_self',secureRoute,userAuth.updateSelf);
 
