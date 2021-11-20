@@ -9,11 +9,15 @@ exports.secureRoute = catchAsync(
         const headers = req.headers?.authorization;
 
         if(!headers || !headers.startsWith('Bearer')){
-           return next(new OperationalError('You dont have access to this page'));
+           return next(new OperationalError('You dont have access to this page',400));
         }
 
         let token = headers?.split(' ')[1];
 
+        if(!token){
+            return next(new OperationalError('You dont have access to this page',400));
+        }
+        
         const data = jwt.verify(token,process.env.JWT_SECRET);
 
         // Token can still be valid but the bearer might have been deleted
