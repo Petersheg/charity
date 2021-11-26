@@ -1,4 +1,5 @@
 const multer = require('multer');
+const OperationalError = require('../utility/operationalError');
 
 exports.upload = multer({
 
@@ -8,7 +9,7 @@ exports.upload = multer({
 
     fileFilter(_,file,cb){
         if(!file.originalname.match(/\.(png|jpg|img|PNG|JPG|IMG)/)){
-            return cb(new Error("Kindly select a right format file"));
+            return cb(new OperationalError("Kindly select a right format file"));
         }
 
         cb(undefined,true);

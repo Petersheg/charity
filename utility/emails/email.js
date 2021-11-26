@@ -20,7 +20,11 @@ const sendEmail =async (options) => {
         html : options.html,
     }
 
-    await transport.sendMail(mailOptions);
+    if(await transport.sendMail(mailOptions)){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 module.exports = sendEmail;

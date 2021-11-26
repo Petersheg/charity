@@ -4,6 +4,7 @@ const xss = require('xss-clean');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 const userRoute = require('./route/user');
+const merchantRoute = require('./route/merchant');
 const OperationalError = require('./utility/operationalError');
 const globalErrorHandler = require('./controller/errorHandler/globalErrorHandler');
 
@@ -26,6 +27,7 @@ app.use(express.json());
 
 // Register all routes
 app.use('/api/v1/users',userRoute);
+app.use('/api/v1/merchants',merchantRoute);
 
 
 // handle all Unregister routes

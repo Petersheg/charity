@@ -16,7 +16,8 @@ if (process.env.NODE_ENV === "development") {
 
 const options = {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 }
 
 mongoose.connect(DB_CONNECT,options)

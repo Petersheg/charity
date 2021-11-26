@@ -7,28 +7,31 @@ const Schema = mongoose.Schema
 //create user Schema
 const userSchema = new Schema({
 
+    userEmail : {
+        type : String,
+        required : [true, 'You must provide an email'],
+        validate : [validator.isEmail,'Kindly provide a valid email address'],
+        unique:true,
+        trim: true
+    },
+
     userName : {
         type : String,
-        minLength : [5,'Full name must have at least 5 characters'],
+        minLength : [5,'User name must have at least 5 characters'],
+        trim: true
     },
 
     userFullName : {
         type : String,
         required: [true, 'You must provide your full name'],
-        minLength : [2,'User name must have at least 2 characters']
-    },
-
-    userEmail : {
-        type : String,
-        required : [true, 'You must provide an email'],
-        validate : [validator.isEmail,'Kindly provide a valid email address'],
-        unique : true,
+        minLength : [5,'User name must have at least 5 characters'],
+        trim: true
     },
 
     userMobile : {
         type :Number,
         required : [true, 'You must provide a mobile number'],
-        min : [11, 'Mobile Number must contain at least 11 characters'],
+        min : [11, 'Mobile Number must contain at least 11 characters']
     },
 
     userRole : {
@@ -39,24 +42,46 @@ const userSchema = new Schema({
 
     userFirstAddress : {
         type: String,
-        required: [true, 'You must provide an address']
+        required: [true, 'You must provide an address'],
     },
 
     userSecondAddress: {
         type: String,
+        trim: true
     },
 
     userState: {
-        type: String
+        type: String,
+        trim: true
     },
 
     userCity: {
-        type: String
+        type: String,
+        trim: true
     },
 
     emailConfirmationStatus : {
         type : Boolean,
         default : false
+    },
+
+    isVerifiedAsMerchant:{
+        type:Boolean,
+    },
+
+    businessName:{
+        type: String,
+        trim: true
+    },
+
+    businessAddress:{
+        type: String,
+        trim: true
+    },
+
+    businessType:{
+        type: String,
+        trim: true
     },
 
     profilePicture:{
@@ -123,7 +148,7 @@ userSchema.methods.generateOneTimeToken = function(validTill){
     this.oneTimeToken = hashedOneTimeToken;
     this.oneTimeTokenExpires = Date.now() + validTill * 60 * 1000;
     
-    console.log({plainOneTimeToken},{hashedOneTimeToken});
+    // console.log({plainOneTimeToken},{hashedOneTimeToken});
     return plainOneTimeToken;
 }
 
