@@ -37,7 +37,7 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
         await user.save({validateBeforeSave : false}); //save changes to model
 
         // Send token to the provided email
-        const activateURL = `${process.env.REDIRECT_URL}/users/verify_email/${oneTimeToken}`;
+        const activateURL = `${process.env.REDIRECT_URL}/users/verify_email/?token=${oneTimeToken}`;
 
         let emailObj = {
             user,
@@ -60,7 +60,7 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
 
         try{
 
-            if(process.env.NODE_ENV === "developmen"){
+            if(process.env.NODE_ENV === "development"){
                 // Send to a mail trap
                 emailIsSent = await sendEmail({
                     email : user.userEmail,
@@ -127,6 +127,7 @@ exports.updateSelf = async(req,res,next)=>{
     if(req.originalUrl.includes("upgrade_to_merchant")){
         
         updatedUser.userRole = "merchant";
+        updatedUser.upgradeToMerchantOn = Date.now;
         // Check if merchant is not verified yet
         if(!updatedUser.isVerifiedAsMerchant){
             updatedUser.isVerifiedAsMerchant = false;
@@ -134,11 +135,12 @@ exports.updateSelf = async(req,res,next)=>{
     }
 
     await updatedUser.save();
+
     // return only data needed by client
     const sendToClient = _.pick(
         updatedUser,
         ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
-        'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress']);
+        'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress','upgradeToMerchantOn']);
 
     res.status(200).json({
         status: "success",
@@ -233,7 +235,7 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({validateBeforeSave : false});
 
     // Send token to the provided email
-    const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/${oneTimeToken}`;
+    const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/?token=${oneTimeToken}`;
 
     let emailObj = {
         user,
