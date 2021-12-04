@@ -37,7 +37,8 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
         await user.save({validateBeforeSave : false}); //save changes to model
 
         // Send token to the provided email
-        const activateURL = `${process.env.REDIRECT_URL}/users/verify_email/?token=${oneTimeToken}`;
+        const activateURL = `${process.env.REDIRECT_URL}/verify_email/?token=${oneTimeToken}`;
+        console.log(activateURL );
 
         let emailObj = {
             user,
@@ -78,7 +79,7 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
     
             }
 
-            // emailIsSent = true;
+            emailIsSent = true;
 
             if(emailIsSent){
 
@@ -235,7 +236,7 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({validateBeforeSave : false});
 
     // Send token to the provided email
-    const resetURL = `${process.env.REDIRECT_URL}/users/reset_password/?token=${oneTimeToken}`;
+    const resetURL = `${process.env.REDIRECT_URL}/reset_password/?token=${oneTimeToken}`;
 
     let emailObj = {
         user,
