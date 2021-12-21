@@ -7,7 +7,7 @@ const handleDuplicateKeys = (err)=>{
 
 const handleValidatorError = (err) =>{
     const field = Object.keys(err.errors)[0];
-    const message = err.errors[field].properties.message;
+    const message = err.errors[field].properties?.message;
     return new OperationalError(message,401);
 }
 
@@ -21,6 +21,12 @@ const handleJWTExpiredError = (err) => {
 
 const handleMulterError = (err) => {
     return new OperationalError(err.message,401);
+}
+
+const handleCastError = (err)=>{
+    const value = /".*?"/g.exec(err.message);
+    let message = `${value} is a wrong input type for the field specified for`;
+    return new OperationalError(message,440);
 }
 
 const developmentError = (err,res)=>{
@@ -50,14 +56,16 @@ const developmentError = (err,res)=>{
 module.exports = (err,req,res,next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
-    
+
+    console.log(err);
+
     if(process.env.NODE_ENV){
 
         if(err.code === 11000){
             err = handleDuplicateKeys(err);
         }
 
-        if(err.message.includes('validation failed')){
+        if(err.message.includes('validation failed') || err.name === 'ValidationError'){
             err = handleValidatorError(err);
         }
 
@@ -72,6 +80,10 @@ module.exports = (err,req,res,next) => {
         if(err.name === 'MulterError'){
             err = handleMulterError(err)
         }
+
+        if(err.name === 'CastError'){
+            err = handleCastError(err);
+         }
 
         developmentError(err,res);
     }

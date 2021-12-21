@@ -16,6 +16,16 @@ class Helper{
     generateTokenAndUserData(req,res,user){
         
     }
+
+    pagination(req,query){
+        // Implement Pagination
+        const pages = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 0;
+        const skip = (pages - 1) * limit;
+
+        query = query?.skip(skip).limit(limit);
+        return query;
+    }
 }
 
 module.exports = new Helper();

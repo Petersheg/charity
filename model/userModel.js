@@ -89,6 +89,15 @@ const userSchema = new Schema({
         select: false
     },
 
+    registeredOn:{
+        type:Date,
+        default: Date.now
+    },
+
+    upgradeToMerchantOn:{
+        type:Date
+    },
+
     password :{
         type : String,
         required : [true,'password is required'],

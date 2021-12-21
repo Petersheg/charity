@@ -30,3 +30,26 @@ exports.getDP = catchAsync(
         res.send(user.profilePicture);
     }
 )
+
+exports.uploadProductIMG=catchAsync(
+    async (req, res, next) => {
+        
+        try {
+          let pictureFiles = req.files;
+          if (!pictureFiles)
+            return res.status(400).json({ message: "No picture attached!" });
+          //map through images and create a promise array using cloudinary upload function
+          let multiplePicturePromise = pictureFiles.map((picture) =>
+            cloudinary.v2.uploader.upload(picture.path)
+          );
+          let imageResponses = await Promise.all(multiplePicturePromise);
+          res.status(200).json({ images: imageResponses });
+        } catch (err) {
+          res.status(500).json({
+            message: err.message,
+          });
+        }
+    }
+)
+
+// app.post("/images", upload.array("pictures", 10));
