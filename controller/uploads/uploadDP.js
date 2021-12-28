@@ -1,10 +1,11 @@
 const sharp = require('sharp');
-const User = require('../../model/userModel')
+const cloudinary = require('cloudinary');
+const User = require('../../model/userModel');
 const catchAsync = require('../../utility/catchAsync');
 const OperationalError = require('../../utility/operationalError');
 
 exports.uploadDP = catchAsync(
-    async (req, res) => {
+    async (req, res, next) => {
 
         const buffer = await sharp(req.file.buffer).png().toBuffer();
 
@@ -31,25 +32,39 @@ exports.getDP = catchAsync(
     }
 )
 
-exports.uploadProductIMG=catchAsync(
-    async (req, res, next) => {
+exports.uploadProductIMG = catchAsync(
+  async (req, res, next) => {
+      
+      cloudinary.v2.config({
+        cloud_name: process.env.CLOUDINARY_NAME ,
+        api_key: process.env.CLOUDINARY_KEY,
+        api_secret: process.env.CLOUDINARY_SECRET ,
+      });
+
+      try {
         
-        try {
-          let pictureFiles = req.files;
-          if (!pictureFiles)
-            return res.status(400).json({ message: "No picture attached!" });
-          //map through images and create a promise array using cloudinary upload function
-          let multiplePicturePromise = pictureFiles.map((picture) =>
-            cloudinary.v2.uploader.upload(picture.path)
-          );
-          let imageResponses = await Promise.all(multiplePicturePromise);
-          res.status(200).json({ images: imageResponses });
-        } catch (err) {
-          res.status(500).json({
-            message: err.message,
-          });
-        }
-    }
+        let pictureFiles = req.files;
+        console.log(req);
+        if (!pictureFiles)
+          return res.status(400).json({ message: "No picture attached!" });
+        
+        //map through images and create a promise array using cloudinary upload function
+        let multiplePicturePromise = pictureFiles.map((picture) =>{
+          return cloudinary.v2.uploader.upload(picture.originalname);
+        });
+
+        let imageResponses = await Promise.all(multiplePicturePromise);
+        
+        res.status(200).json({
+            images: imageResponses 
+        });
+
+      }catch (err) {
+        res.status(500).json({
+          message: err.message,
+        });
+      }
+  }
 )
 
 // app.post("/images", upload.array("pictures", 10));

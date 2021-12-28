@@ -84,9 +84,15 @@ const userSchema = new Schema({
         trim: true
     },
 
+    // for regular signup
     profilePicture:{
         type: Buffer,
         select: false
+    },
+
+    // for oAuth signup
+    imageUrl:{
+        type: String,
     },
 
     registeredOn:{

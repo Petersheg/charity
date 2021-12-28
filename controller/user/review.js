@@ -2,7 +2,7 @@ const catchAsync = require('../../utility/catchAsync');
 const OperationalError = require('../../utility/operationalError');
 const Reviews = require('../../model/reviewsModel');
 const Product = require('../../model/product/product');
-const helperFunc = require('../../utility/helper')
+const helperFunc = require('../../utility/helperFunc')
 
 exports.addReview = catchAsync(
 

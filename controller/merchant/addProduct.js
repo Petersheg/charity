@@ -1,8 +1,4 @@
-// const User = require('../../model/userModel');
 const Product = require('../../model/product/product');
-// const Category = require('../../model/product/category');
-// const Inventory = require('../../model/product/inventory');
-// const Price = require('../../model/product/price');
 const OperationalError = require('../../utility/operationalError');
 const catchAsync = require('../../utility/catchAsync');
 
@@ -28,12 +24,19 @@ exports.addProduct = catchAsync(
         product.category = {genericCat,specificCat};
         product.inventory = {sku,lowStockThreshold,quantity}
         product.inventory.inStock = product.checkAvailability();
-        product.price = {productPrice,discount};
 
-        product.price.offPercentage = product.calcOffPercent();
+        if(discount){
 
-        console.log(product.price.offPercentage);
-        console.log(product.calcOffPercent());
+            if(discount >= productPrice){
+                return next(new OperationalError("discount must be less than actual price",400))
+            }
+            product.price = {productPrice,discount};
+            product.price.offPercentage = product.calcOffPercent();
+        }
+
+        if(!discount){
+            product.price = {productPrice};
+        }
 
         const tags = productTags.split(',');
 
@@ -46,13 +49,6 @@ exports.addProduct = catchAsync(
         })
 
         product.merchant = merchantId;
-
-        // Save all sub documents
-        // await inventory.save();
-        // await price.save();
-
-        // remove all temporary fields
-        // product.removeTemFields();
 
         // similar Products
         const productsByCategory = await Product

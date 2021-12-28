@@ -6,6 +6,7 @@ const OperationalError = require('../../utility/operationalError');
 const sendEmail = require('../../utility/emails/email');
 const sendGridEmail = require('../../utility/emails/sendGridEmail');
 const template = require('../../utility/emails/templates');
+const helperFunction = require('../../utility/helperFunc');
 
 const generateJWT = (id)=>{
     return jwt.sign({id}, process.env.JWT_SECRET,{
@@ -13,7 +14,7 @@ const generateJWT = (id)=>{
     });
 }
 
-exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
+exports.signUp = async (req,res,next,fieldsArr)=>{
 
     // select only data needed to be saved to the database.
     const allowFields =  _.pick(req.body,fieldsArr)
@@ -21,13 +22,12 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
     // create new user
     const user = await  User.create(allowFields);
 
-    if(req.originalUrl.includes("merchants")){
-        user.userRole="merchant";
-        user.isVerifiedAsMerchant = false;
-    }
+    helperFunction.changeUserRoleToMerchant(req,user);
 
-    // return only data needed by client
-    const sendToClient = _.pick(user,toClientArr);
+    // if(req.originalUrl.includes("merchants")){
+    //     user.userRole="merchant";
+    //     user.isVerifiedAsMerchant = false;
+    // }
 
     const token = generateJWT(user._id);
 
@@ -79,18 +79,9 @@ exports.signUp = async (req,res,next,fieldsArr,toClientArr)=>{
     
             }
 
-            emailIsSent = true;
-
             if(emailIsSent){
-
-                res.status(200).json({
-                    status : 'success',
-                    message: 'registration successful, kindly check your email for next step',
-                    data : {
-                        token,
-                        user:sendToClient
-                    }
-                });
+                let message = 'registration successful, kindly check your email for next step'
+                helperFunction.generateTokenAndUserData(200,user,res,message);
             }
 
         }catch(err){
@@ -211,16 +202,9 @@ exports.login = async (req,res,next) => {
         ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
         'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress']);
 
-    const token = generateJWT(user._id);
     
-    res.status(200).json({
-        status : 'success',
-        message: 'login successful',
-        data:{
-            token,
-            user:sendToClient
-        }
-    });
+    helperFunction.generateTokenAndUserData(200,user,res,'new login successful');
+    
 }
 
 exports.forgotPassword = async (req, res, next) => {

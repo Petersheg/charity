@@ -7,13 +7,9 @@ exports.signUp = catchAsync(
 
         // select only data needed to be saved to the database.
         const fieldsArr = ['userFullName','userEmail','userName','userMobile','userFirstAddress',
-            'userSecondAddress','userState','userCity','businessName','businessType','businessAddress', 'password','confirmPassword']
+            'userSecondAddress','userState','userCity','businessName','businessType','businessAddress', 'password','confirmPassword'];
 
-        // return only data needed by client
-        const toClientArr = ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
-            'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress'];
-
-        await merchant.signUp(req,res,next,fieldsArr,toClientArr);
+        await merchant.signUp(req,res,next,fieldsArr);
     }
    
 );

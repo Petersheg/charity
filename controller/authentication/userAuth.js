@@ -10,11 +10,7 @@ exports.userSignUp = catchAsync(
         const fieldsArr = ['userFullName','userEmail','userName','userMobile','userFirstAddress',
             'userSecondAddress','userState','userCity','password','confirmPassword']
 
-        // return only data needed by client
-        const toClientArr = ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
-            'userSecondAddress','userState','userCity','userRole'];
-
-        await user.signUp(req,res,next,fieldsArr,toClientArr);
+        await user.signUp(req,res,next,fieldsArr);
     }
    
 );

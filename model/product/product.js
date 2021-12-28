@@ -85,6 +85,29 @@ const productSchema = new mongoose.Schema({
     }
 });
 
+productSchema.pre('save', function(next){
+    if( this.isModified('productPrice') || this.isModified('discount') || !this.isNew){
+        let newDiscount = this.price.discount * 100;
+        let newPrice = newDiscount/this.price.productPrice;
+        this.price.offPercentage = Math.round(100 - newPrice);
+        console.log(this.isModified('price.productPrice'),this.isModified('price.discount'),this.isNew);
+        //return Math.round(100 - newPrice);
+    };
+
+    next();
+})
+
+productSchema.pre('save', function(next){
+    console.log(this.isModified('color'), this.isModified('discount'), this.isNew);
+
+    // if(this.isModified('productPrice') || !this.isModified('size') || !this.isNew){
+    //     console.log('IN Math.round(100 - newPrice)');
+    // }
+    // console.log('JIN Math.round(100 - newPrice)');
+
+    next();
+})
+
 productSchema.methods.detectSimilarProducts = function(products){
     products.filter((product)=>{
         return this.newTags.filter((tag)=>{
@@ -92,6 +115,7 @@ productSchema.methods.detectSimilarProducts = function(products){
         }).length > 2
     }).map( similar => this.similarProducts.push(similar._id));
 }
+
 productSchema.methods.removeTemFields = function(){
     this.genericCat = 
     this.productPrice = this.discount = 

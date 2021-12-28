@@ -1,7 +1,7 @@
 const OperationalError = require('../../utility/operationalError');
 const catchAsync = require('../../utility/catchAsync');
 const Product = require('../../model/product/product');
-const helperFunc = require('../../utility/helper');
+const helperFunc = require('../../utility/helperFunc');
 
 exports.getProduct = catchAsync(
 

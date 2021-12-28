@@ -7,7 +7,7 @@ exports.upload = multer({
         fileSize: 3000000
     },
 
-    fileFilter(_,file,cb){
+    fileFilter(req,file,cb){
         if(!file.originalname.match(/\.(png|jpg|img|PNG|JPG|IMG)/)){
             return cb(new OperationalError("Kindly select a right format file"));
         }
@@ -15,3 +15,11 @@ exports.upload = multer({
         cb(undefined,true);
     }
 });
+
+const storage = multer.diskStorage({
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + "-" + Date.now());
+    },
+});
+
+exports.uploadCloud = multer({storage});
