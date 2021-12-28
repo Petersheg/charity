@@ -21,9 +21,9 @@ const sendEmail =async (options) => {
     }
 
     if(await transport.sendMail(mailOptions)){
-        return true;
+        return "sent";
     }else{
-        return false;
+        return "error";
     }
 }
 

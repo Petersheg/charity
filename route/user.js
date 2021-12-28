@@ -8,6 +8,7 @@ const {upgradeToMerchant} = require('../controller/user/upgradeToMerchant');
 const review = require('../controller/user/review');
 const {favorite} = require('../controller/user/favoriteItems');
 const {saved} = require('../controller/user/saveItems');
+const {resentEmail} = require('../controller/user/resendEmail');
 const oauth = require('../controller/authentication/oAuth/main');
 
 
@@ -18,6 +19,7 @@ router.post('/signup',userAuth.userSignUp);
 router.post('/oauth/google',oauth.googleOAuth2);
 
 router.post('/forgot_password',userAuth.forgotPassword);
+router.post('/resend_email',resentEmail);
 router.patch('/verify_email/:oneTimeToken',userAuth.verifyEmail);
 router.post('/reset_password/:oneTimeToken',userAuth.resetPassword);
 
