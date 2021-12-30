@@ -6,8 +6,8 @@ const userAuth = require('../controller/authentication/userAuth');
 const uploadCon = require('../controller/uploads/uploadDP');
 const {upgradeToMerchant} = require('../controller/user/upgradeToMerchant');
 const review = require('../controller/user/review');
-const {favorite} = require('../controller/user/favoriteItems');
-const {saved} = require('../controller/user/saveItems');
+const {addFavorite,removeFavorite,getFavorite} = require('../controller/user/favoriteItems');
+const {addSave,removeSaved,getSaved} = require('../controller/user/saveItems');
 const {resentEmail} = require('../controller/user/resendEmail');
 const oauth = require('../controller/authentication/oAuth/main');
 
@@ -17,6 +17,7 @@ const router = express.Router();
 router.post('/login',userAuth.login);
 router.post('/signup',userAuth.userSignUp);
 router.post('/oauth/google',oauth.googleOAuth2);
+router.post('/oauth/facebook',oauth.googleOAuth2);
 
 router.post('/forgot_password',userAuth.forgotPassword);
 router.post('/resend_email',resentEmail);
@@ -33,7 +34,12 @@ router.post('/:userId/upgrade_to_merchant',secureRoute,authorize('user'),upgrade
 router.post('/:productId/add_review',secureRoute,authorize('user'),review.addReview);
 router.get('/:productId/get_reviews',secureRoute,authorize('user'),review.getProductReviews);
 
-router.post('/:productId/add_to_save',secureRoute,authorize('user'),saved);
-router.post('/:productId/add_to_favorite',secureRoute,authorize('user'),favorite);
+
+router.post('/:productId/add_to_save',secureRoute,authorize('user'),addSave);
+router.post('/:productId/add_to_favorite',secureRoute,authorize('user'),addFavorite);
+router.post('/:productId/remove_saved_item',secureRoute,authorize('user'),removeSaved);
+router.post('/:productId/remove_favorite_item',secureRoute,authorize('user'),removeFavorite);
+router.get('/get_saved_items',secureRoute,authorize('user'),getSaved);
+router.get('/get_favorite_items',secureRoute,authorize('user'),getFavorite);
 
 module.exports = router;

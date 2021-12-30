@@ -134,6 +134,7 @@ const userSchema = new Schema({
 //Hash user Password
 userSchema.pre('save', async function(next){
     // If password is not changed then dont hash.
+    console.log(this.isModified('password'));
     if(!this.isModified('password')) return next();
 
     this.password = await bcrypt.hash(this.password,12);

@@ -57,3 +57,63 @@ exports.storeItems = async (req,res,next,Model)=>{
         })
     }
 }
+
+exports.removeItem = async (req,res,next,Model)=>{
+
+    const productId = req.params.productId;
+    const user = req.user._id;
+
+    const product = await Product.findById(productId);
+    if(!product) {
+        return next(new OperationalError("Product not found",400));
+    }
+
+    // Check if Store already exist for this user
+    const store = await Model.findOne({user});
+
+     // Check Store if product exist
+     const productExist =  await Model.findOne({
+        products : {$eq : productId}
+    });
+
+
+    if(store && !productExist){
+        return next(new OperationalError("Product you are trying to remove does not exist",400));
+    }
+
+    if(store && productExist){
+        store.products.pop(productId);
+        store.save();
+
+        res.status(200).json({
+            status: 'success',
+            message: `Product remove successfully`,
+            data:{
+                items : store
+            }
+        })
+    }
+}
+
+exports.getItems = async (req,res,next,Model)=>{
+    
+    const user = req.user._id;
+
+    // Check if Store already exist for this user
+    const store = await Model.findOne({user}).populate({
+        path:'products',
+        select:'-similarProducts'
+    });
+
+    if(!store || store.products.length === 0){
+        return next(new OperationalError("You do not have any item(s) in here",400));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        message: `Item(s) fetched`,
+        data:{
+            items : store
+        }
+    })
+}

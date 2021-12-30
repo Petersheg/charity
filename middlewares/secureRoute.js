@@ -23,7 +23,8 @@ exports.secureRoute = catchAsync(
         // Token can still be valid but the bearer might have been deleted
         // Double check if user exist along with the token;
 
-        const validUser = await User.findById(data.id);
+        const validUser = await User.findById(data.userId);
+        console.log(data);
 
         if(!validUser){
             return next(new OperationalError('User not found',400));
