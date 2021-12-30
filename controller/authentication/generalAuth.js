@@ -144,7 +144,7 @@ exports.login = async (req,res,next) => {
         'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress']);
 
     
-    helperFunction.generateTokenAndUserData(200,user,res,'new login successful');
+    helperFunction.generateTokenAndUserData(200,user,res,'login successful');
     
 }
 
