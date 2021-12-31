@@ -61,7 +61,6 @@ class Helper{
 
         // Send token to the provided email
         const activateURL = `${process.env.REDIRECT_URL}/verify_email/?token=${oneTimeToken}`;
-        console.log(activateURL );
 
         let emailObj = {
             user,
@@ -105,7 +104,7 @@ class Helper{
             return sentStatus;
 
         }catch(err){
-            console.log(err.message);
+            console.log(`Sending email fail ${err.message}`);
             return sentStatus = err.message
         }
     }

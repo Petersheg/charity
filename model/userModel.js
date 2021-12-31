@@ -134,7 +134,6 @@ const userSchema = new Schema({
 //Hash user Password
 userSchema.pre('save', async function(next){
     // If password is not changed then dont hash.
-    console.log(this.isModified('password'));
     if(!this.isModified('password')) return next();
 
     this.password = await bcrypt.hash(this.password,12);
@@ -163,8 +162,6 @@ userSchema.methods.generateOneTimeToken = function(validTill){
     const hashedOneTimeToken = crypto.createHash('sha256').update(plainOneTimeToken).digest('hex');
     this.oneTimeToken = hashedOneTimeToken;
     this.oneTimeTokenExpires = Date.now() + validTill * 60 * 1000;
-    
-    // console.log({plainOneTimeToken},{hashedOneTimeToken});
     return plainOneTimeToken;
 }
 

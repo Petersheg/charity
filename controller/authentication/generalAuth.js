@@ -201,17 +201,16 @@ exports.forgotPassword = async (req, res, next) => {
         
         // emailIsSent = true;
 
-            if(emailIsSent){
-
-                res.status(200).json({
-                    status : 'success',
-                    message : 'Message sent to your email, kindly check'
-                })
-            }
+        if(emailIsSent === "sent"){
+            res.status(200).json({
+                status : 'success',
+                message : 'Message sent to your email, kindly check'
+            })
+        }
 
     }catch(err){
 
-        user.oneTimeToken = undefined,
+        user.oneTimeToken = undefined;
         user.oneTimeTokenExpires = undefined;
 
         // Save your data after modification
