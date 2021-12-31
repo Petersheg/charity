@@ -34,30 +34,26 @@ exports.getDP = catchAsync(
 
 exports.uploadProductIMG = catchAsync(
   async (req, res, next) => {
-      
-      cloudinary.v2.config({
-        cloud_name: process.env.CLOUDINARY_NAME ,
-        api_key: process.env.CLOUDINARY_KEY,
-        api_secret: process.env.CLOUDINARY_SECRET ,
-      });
 
       try {
         
         let pictureFiles = req.files;
-        console.log(req);
-        if (!pictureFiles)
-          return res.status(400).json({ message: "No picture attached!" });
+        console.log(pictureFiles);
+        // if (!pictureFiles)
+        //   return res.status(400).json({ message: "No picture attached!" });
         
-        //map through images and create a promise array using cloudinary upload function
-        let multiplePicturePromise = pictureFiles.map((picture) =>{
-          return cloudinary.v2.uploader.upload(picture.originalname);
-        });
+        // //map through images and create a promise array using cloudinary upload function
+        // let multiplePicturePromise = pictureFiles.map((picture) =>{
+        //   return cloudinary.v2.uploader.upload(picture.originalname);
+        //   // return cloudinary.v2.uploader.upload_stream();
 
-        let imageResponses = await Promise.all(multiplePicturePromise);
+        // });
+
+        // let imageResponses = await Promise.all(multiplePicturePromise);
         
-        res.status(200).json({
-            images: imageResponses 
-        });
+        // res.status(200).json({
+        //     images: imageResponses 
+        // });
 
       }catch (err) {
         res.status(500).json({
@@ -66,5 +62,3 @@ exports.uploadProductIMG = catchAsync(
       }
   }
 )
-
-// app.post("/images", upload.array("pictures", 10));

@@ -20,7 +20,8 @@ router.post('/:Id/edit_product',secureRoute,authorize('merchant'),editProduct);
 
 router.post(
     '/upload_product_image',///:productId
-    secureRoute,authorize('merchant'),
+    // secureRoute,authorize('merchant'),
+    // upload.single('productImage'),
     upload.array('productImage',6),
     uploadCon.uploadProductIMG
 );
