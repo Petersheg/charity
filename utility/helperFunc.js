@@ -56,7 +56,7 @@ class Helper{
 
     async sendVerificationEmail(user){
         
-        const oneTimeToken = user.generateOneTimeToken(62 * 60) // 3 days validity
+        const oneTimeToken = user.generateOneTimeToken(72 * 60) // 3 days validity
         await user.save({validateBeforeSave : false}); //save changes to model
 
         // Send token to the provided email

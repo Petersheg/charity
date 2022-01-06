@@ -54,7 +54,7 @@ exports.getProductReviews = catchAsync(
         avgRating = Number(avgRating.toFixed(1));
 
         // Run pagination on response
-        const reviews = await helperFunc.pagination(req,review)
+        const reviews = await helperFunc.pagination(req,review);
         
 
         if(!reviews || reviews.length === 0){

@@ -157,7 +157,7 @@ exports.forgotPassword = async (req, res, next) => {
     };
 
     // set password reset Token
-    const oneTimeToken = user.generateOneTimeToken(30); //30 minutes validity
+    const oneTimeToken = user.generateOneTimeToken(30);//30 minutes validity
     await user.save({validateBeforeSave : false});
 
     // Send token to the provided email

@@ -1,6 +1,6 @@
 const OperationalError = require('../../../utility/operationalError');
 const Product = require('../../../model/product/product');
-
+const helperFunc = require('../../../utility/helperFunc');
 
 exports.storeItems = async (req,res,next,Model)=>{
 
@@ -105,15 +105,16 @@ exports.getItems = async (req,res,next,Model)=>{
         select:'-similarProducts'
     });
 
-    if(!store || store.products.length === 0){
+    if(!store|| store.products.length === 0){
         return next(new OperationalError("You do not have any item(s) in here",400));
     }
-
+    
+    let products = store.products;
     res.status(200).json({
         status: 'success',
         message: `Item(s) fetched`,
         data:{
-            items : store
+            products
         }
     })
 }
