@@ -62,7 +62,7 @@ class Helper{
 
     async sendVerificationEmail(req,user){
         
-        const oneTimeToken = user.generateOneTimeToken(72 * 60) // 3 days validity
+        const oneTimeToken = user.generateOneTimeToken(process.env.ONE_TIME_TOKEN_VALIDITY) // 30 minutes validity
         await user.save({validateBeforeSave : false}); //save changes to model
 
         // Send token to the provided email
@@ -111,7 +111,7 @@ class Helper{
                 // Send to a mail trap
                 sentStatus = await sendEmail({
                     email : user.userEmail,
-                    subject : 'Activate your Email (Expires After 3 days)',
+                    subject : 'Activate your Email (Expires After 30 minutes)',
                     html
                 });
                 
@@ -119,7 +119,7 @@ class Helper{
                 // send to actual mail
                 sentStatus = await sendGridEmail({
                     email : user.userEmail,
-                    subject : 'Activate your Email (Expires After 3 days)',
+                    subject : 'Activate your Email (Expires After 30 minutes)',
                     html
                 });
     

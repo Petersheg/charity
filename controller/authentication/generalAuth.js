@@ -83,10 +83,13 @@ exports.verifyEmail = async (req,res,next)=>{
     const oneTimeToken = req.params.oneTimeToken;
     const hashedOneTimeToken = crypto.createHash('sha256').update(oneTimeToken).digest('hex');
 
-    const user = await User.findOne({oneTimeToken : hashedOneTimeToken});//Look up user base on oneTimeToken
+    const user = await User.findOne({
+        oneTimeToken : hashedOneTimeToken,
+        oneTimeTokenExpires : {$gt  : Date.now()}
+    });//Look up user base on oneTimeToken
 
     if(!user){
-        return next(new OperationalError('User does not exist',404))
+        return next(new OperationalError('token expired, kindly request a new one',404));
     }
 
     try{
@@ -153,7 +156,7 @@ exports.forgotPassword = async (req, res, next) => {
     };
 
     // set password reset Token
-    const oneTimeToken = user.generateOneTimeToken(30);//30 minutes validity
+    const oneTimeToken = user.generateOneTimeToken(process.env.ONE_TIME_TOKEN_VALIDITY);//30 minutes validity
     await user.save({validateBeforeSave : false});
 
     // Send token to the provided email
@@ -181,7 +184,7 @@ exports.forgotPassword = async (req, res, next) => {
             // Send to a mail trap
             emailIsSent = await sendEmail({
                 email : user.userEmail,
-                subject : 'Password Reset Email (Expires After Thirty minute)',
+                subject : 'Password Reset Email (Expires After 30 minutes)',
                 html
             });
             
@@ -189,7 +192,7 @@ exports.forgotPassword = async (req, res, next) => {
             // send to actual mail
             emailIsSent = await sendGridEmail({
                 email : user.userEmail,
-                subject : 'Password Reset Email (Expires After Thirty minute)',
+                subject : 'Password Reset Email (Expires After 30 minutes)',
                 html
             });
 
@@ -229,7 +232,7 @@ exports.resetPassword = async (req,res, next)=> {
     });
 
     if(!user){
-        return next(new OperationalError('Invalid token', 404));
+        return next(new OperationalError('invalid or expired token', 404));
     }
 
     const {password, confirmPassword} = req.body;
