@@ -36,12 +36,13 @@ const userSchema = new Schema({
 
     userRole : {
         type : String,
-        enum : ['user', 'admin', 'merchant'],
+        enum : ['user', 'admin', 'merchant','super admin'],
         default : 'user',
     },
 
     userFirstAddress : {
         type: String,
+        trim: true,
         required: [true, 'You must provide an address'],
     },
 
@@ -100,8 +101,23 @@ const userSchema = new Schema({
         default: Date.now
     },
 
+    modeOfRegistration :{
+        type : String,
+        default : 'manual',
+    },
+
     upgradeToMerchantOn:{
         type:Date
+    },
+
+    privileges:{
+        type:Array,
+        default: undefined
+    },
+
+    accountStatus:{
+        type: Boolean,
+        default: true,
     },
 
     password :{

@@ -8,29 +8,23 @@ const sendGridEmail = require('../../utility/emails/sendGridEmail');
 const template = require('../../utility/emails/templates');
 const helperFunction = require('../../utility/helperFunc');
 
-const generateJWT = (id)=>{
-    return jwt.sign({id}, process.env.JWT_SECRET,{
-        expiresIn : process.env.JWT_EXPIRES_IN
-    });
-}
-
-exports.signUp = async (req,res,next,fieldsArr)=>{
+exports.signUp = async (req,res,next,fieldsArr,role)=>{
 
     // select only data needed to be saved to the database.
-    const allowFields =  _.pick(req.body,fieldsArr)
+    const allowFields =  _.pick(req.body,fieldsArr);
     
     // create new user
     const user = await  User.create(allowFields);
 
-    helperFunction.changeUserRoleToMerchant(req,user);
+    helperFunction.changeUserRole(req,user,role);
 
-    const emailStatus = await helperFunction.sendVerificationEmail(user);
-
+    const emailStatus = await helperFunction.sendVerificationEmail(req,user);
+    await user.save();
     if(emailStatus === "sent"){
-        let message = 'registration successful, kindly check your email for next step'
+        let message = 'registration successful, kindly check your email for next step';
         helperFunction.generateTokenAndUserData(200,user,res,message);
     }else{
-        return next(new OperationalError('Something went wrong, kindly try again',500))
+        return next(new OperationalError('Something went wrong, kindly try again',500));
     }
 };
 
@@ -133,16 +127,13 @@ exports.login = async (req,res,next) => {
         return next(new OperationalError('Wrong Login Info',400));
     }
 
-    if(!user.emailConfirmationStatus){
-        return next(new OperationalError('Kindly verify your email address',400))
+    // if(!user.emailConfirmationStatus){
+    //     return next(new OperationalError('Kindly verify your email address',400));
+    // }
+
+    if(!user.accountStatus){
+        return next(new OperationalError('Your account has been deactivated, kindly contact support to re-activate',400))
     }
-
-    // filter what client see
-    const sendToClient = _.pick(
-        user,
-        ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
-        'userSecondAddress','userState','userCity','userRole','businessName','businessType','businessAddress']);
-
     
     helperFunction.generateTokenAndUserData(200,user,res,'login successful');
     
@@ -154,6 +145,11 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ userEmail: req.body.email});
     if(!user){
         return next(new OperationalError('User not found',401));
+    };
+
+    // if account is registered with oAuth return error
+    if(user.modeOfRegistration === 'oAuth'){
+        return next(new OperationalError('Your mode of registration do not support this operation',401));
     };
 
     // set password reset Token
@@ -256,6 +252,11 @@ exports.updatePassword = async(req,res,next)=>{
     const userId = req.params.userId;
     const currentUser = await User.findById(userId).select("+password");
     const {currentPassword,password,confirmPassword} = req.body;
+
+    // if account is registered with oAuth return error
+    if(currentUser.modeOfRegistration === 'oAuth'){
+        return next(new OperationalError('Your mode of registration do not support this operation',401));
+    };
 
     if(currentPassword === "" || !currentPassword){
         return next(new OperationalError("current password is required"));

@@ -38,9 +38,10 @@ exports.googleOAuth2 = catchAsync(
                 userName,
                 userEmail : email,
                 imageUrl,
-                emailConfirmationStatus : true
+                emailConfirmationStatus : true,
+                modeOfRegistration : 'oAuth'
             })
-            helperFunction.changeUserRoleToMerchant(req,newUser);
+            helperFunction.changeUserRole(req,newUser,'merchant');
             await newUser.save({validateBeforeSave : false});
 
             helperFunction.generateTokenAndUserData(200,newUser,res,"sign up successful");

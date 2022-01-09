@@ -15,9 +15,9 @@ exports.storeItems = async (req,res,next,Model)=>{
     // Check if Store already exist for this user
     const store = await Model.findOne({user});
 
-    function addProductAndSave(store) {
+    async function addProductAndSave(store) {
         store.products.push(productId);
-        store.save();
+        await store.save();
 
         res.status(200).json({
             status: 'success',
@@ -31,7 +31,7 @@ exports.storeItems = async (req,res,next,Model)=>{
     // If Store does not exist, create a new one and add product
     if(!store){
         const newStore = await Model.create({user});
-        addProductAndSave(newStore)
+        await addProductAndSave(newStore);
     }
 
     // Check Store if product exist
@@ -41,12 +41,12 @@ exports.storeItems = async (req,res,next,Model)=>{
 
 
     if(store && !productExist){
-        addProductAndSave(store);
+        await addProductAndSave(store);
     }
 
     if(store && productExist){
         store.products.pop(productId);
-        store.save();
+        await store.save();
 
         res.status(200).json({
             status: 'success',
@@ -83,7 +83,7 @@ exports.removeItem = async (req,res,next,Model)=>{
 
     if(store && productExist){
         store.products.pop(productId);
-        store.save();
+        await store.save();
 
         res.status(200).json({
             status: 'success',

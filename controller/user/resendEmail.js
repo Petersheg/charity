@@ -25,7 +25,7 @@ exports.resentEmail = catchAsync(
         user.oneTimeTokenExpires = undefined
         await user.save({validateBeforeSave : false});
 
-        const emailStatus = await helperFunction.sendVerificationEmail(user);
+        const emailStatus = await helperFunction.sendVerificationEmail(req,user);
 
         if(emailStatus === "sent"){
             res.status(200).json({

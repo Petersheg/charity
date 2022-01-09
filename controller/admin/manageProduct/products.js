@@ -2,7 +2,7 @@ const catchAsync = require("../../../utility/catchAsync");
 const OperationalError = require("../../../utility/operationalError");
 const Product = require("../../../model/product/product");
 const DealOfTheDay = require('../../../model/product/dealOfTheDay');
-const reuse = require('../reuse');
+const reuse = require('../../general/reuse');
 
 exports.respondToDealOfTheDay = catchAsync(
     async(req,res,next)=>{
@@ -47,7 +47,7 @@ exports.respondToDealOfTheDay = catchAsync(
             productFromDOD.accept = undefined;
             productFromDOD.dateAccepted = undefined;
         }
-        productFromDOD.save();
+        await productFromDOD.save();
         
         res.status(200).json({
             status : 'success',
@@ -59,12 +59,12 @@ exports.respondToDealOfTheDay = catchAsync(
 
 exports.deleteDOD = catchAsync(
     async (req,res,next)=>{
-        await reuse.deleteController(req,res,next,DealOfTheDay, "deal");
+        await reuse.deleteController(req,res,next,"deal",DealOfTheDay);
     }
 )
 
 exports.deleteProduct = catchAsync(
     async(req,res,next)=>{
-        await reuse.deleteController(req,res,next,Product,"product");
+        await reuse.deleteController(req,res,next,"product",Product);
     }
 );

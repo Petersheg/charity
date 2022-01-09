@@ -12,6 +12,6 @@ exports.editProduct = catchAsync(
         if(String(product.merchant) !== String(user._id)){
             return next(new OperationalError("you can not edit this product",400));
         }
-        reusable.editContent(req,res,next,product,Product)
+        reusable.editController(req,res,next,product,Product)
     }
 )

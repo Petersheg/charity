@@ -9,7 +9,7 @@ exports.signUp = catchAsync(
         const fieldsArr = ['userFullName','userEmail','userName','userMobile','userFirstAddress',
             'userSecondAddress','userState','userCity','businessName','businessType','businessAddress', 'password','confirmPassword'];
 
-        await merchant.signUp(req,res,next,fieldsArr);
+        await merchant.signUp(req,res,next,fieldsArr,'merchant');
     }
    
 );

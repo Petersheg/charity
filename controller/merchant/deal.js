@@ -33,7 +33,7 @@ exports.addDealOfTheDay = catchAsync(
         })
         deal.user = req.user._id;
         deal.product = productId;
-        deal.save();
+        await deal.save();
 
         // if we have to restrict merchant to a specific number of products to added
         const allUserDOD = await DealOfTheDay.countDocuments({user : req.user._id});
@@ -88,7 +88,6 @@ exports.getDOD = catchAsync(
 
         merchantsDeals.map( deal => {
             deal.checkIfStillValid();
-            deal.save();
         });
 
         res.status(200).json({

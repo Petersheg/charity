@@ -25,7 +25,7 @@ class Helper{
         user = _.pick(
         user,
         ['id','userFullName','userEmail','userName','userMobile','userFirstAddress',
-        'userSecondAddress','userState','userCity','userRole','imageUrl','businessName','businessType','businessAddress']);
+        'userSecondAddress','userState','userCity','userRole','imageUrl','emailConfirmationStatus','privileges','accountStatus','businessName','businessType','businessAddress']);
 
         res.status(statusCode).json({
             status : 'success',
@@ -36,12 +36,18 @@ class Helper{
             }
         })
     }
+    // changeUserRoleToMerchant
+    changeUserRole(req,user,role){
 
-    changeUserRoleToMerchant(req,user) {
         if(req.originalUrl.includes("merchants")){
-            user.userRole="merchant";
+            user.userRole=role;
             user.isVerifiedAsMerchant = false;
         }
+
+        if(req.originalUrl.includes("admin")){
+            user.userRole = role;
+        }
+        
     }
 
     pagination(req,query){
@@ -54,7 +60,7 @@ class Helper{
         return query;
     }
 
-    async sendVerificationEmail(user){
+    async sendVerificationEmail(req,user){
         
         const oneTimeToken = user.generateOneTimeToken(72 * 60) // 3 days validity
         await user.save({validateBeforeSave : false}); //save changes to model
@@ -62,15 +68,33 @@ class Helper{
         // Send token to the provided email
         const activateURL = `${process.env.REDIRECT_URL}/verify_email/?token=${oneTimeToken}`;
 
+        let message;
+
+        if(req.originalUrl.includes('/add_admin')){
+
+            message = `A warm welcome to PICKORDER, you have been added as admin, 
+            Kindly click on the verify button bellow to complete your registration.
+            After you have been verified make use of the details below to login and 
+            do not forget to update your password after being logged in.
+            <div>
+                <p>Email : ${req.body.userEmail}</p>
+                <p>Password : ${req.body.password}</p>
+            </div>`
+
+        }else{
+
+            message = `A warm welcome to PICKORDER, We are glad to have you here,
+            you have taken the first step, complete the next by verifying your 
+            email address to complete your registration.
+            Kindly click on the verify button bellow to complete your registration.`
+        }
+
         let emailObj = {
             user,
             greeting : "WELCOME",
             heading : `KINDLY VERIFY YOUR EMAIL.`,
 
-            message : `A warm welcome to PICKORDER, We are glad to have you here,
-                        you have taken the first step, complete the next by verifying your 
-                        email address to complete your registration.
-                        Kindly click on the verify button bellow to complete your registration.`,
+            message,
 
             link : activateURL,
             buttonText : "VERIFY",
