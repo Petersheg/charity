@@ -10,15 +10,15 @@ exports.addDealOfTheDay = catchAsync(
         const product = await Product.findById(productId);
 
         if(!productId){
-            return next(new OperationalError('Product Id is required'))
+            return next(new OperationalError('product Id is required',400))
         }
 
         if(!product) {
-            return next(new OperationalError('Product not found',400));
+            return next(new OperationalError('product not found',404));
         }
 
         if(String(product.merchant) !== String(req.user._id)){
-            return next(new OperationalError('You can only add a product that belongs to you!'))
+            return next(new OperationalError('You can only add a product that belongs to you!',406))
         }
 
         const productCheck = await DealOfTheDay.findOne({product:productId});
@@ -54,7 +54,7 @@ exports.removeDealOfTheDay = catchAsync(
         const productDelete = await DealOfTheDay.findOneAndDelete({product : productId});
 
         if(!productDelete){
-            return next(new OperationalError('Product you are trying to remove does not exist in Deal',500));
+            return next(new OperationalError('Product you are trying to remove does not exist in Deal',400));
         }
 
         res.status(200).json({

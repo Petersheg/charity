@@ -10,7 +10,7 @@ exports.respondToDealOfTheDay = catchAsync(
         const productFromDOD = await DealOfTheDay.findOne({product : productId});
 
         if(!productFromDOD){
-            return next(new OperationalError('Product do not exist in deal',400));
+            return next(new OperationalError('Product do not exist in deal',404));
         }
 
         const {decision} = req.body;

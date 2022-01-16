@@ -10,7 +10,7 @@ exports.editProduct = catchAsync(
         const product = await Product.findById(productId).select('merchant');
 
         if(String(product.merchant) !== String(user._id)){
-            return next(new OperationalError("you can not edit this product",400));
+            return next(new OperationalError("you can only edit product that belongs to you",406));
         }
         reusable.editController(req,res,next,product,Product)
     }

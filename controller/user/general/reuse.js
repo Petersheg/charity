@@ -9,7 +9,7 @@ exports.storeItems = async (req,res,next,Model)=>{
 
     const product = await Product.findById(productId);
     if(!product) {
-        return next(new OperationalError("Product not found",400));
+        return next(new OperationalError("Product not found",404));
     }
 
     // Check if Store already exist for this user
@@ -65,7 +65,7 @@ exports.removeItem = async (req,res,next,Model)=>{
 
     const product = await Product.findById(productId);
     if(!product) {
-        return next(new OperationalError("Product not found",400));
+        return next(new OperationalError("Product not found",404));
     }
 
     // Check if Store already exist for this user
@@ -78,7 +78,7 @@ exports.removeItem = async (req,res,next,Model)=>{
 
 
     if(store && !productExist){
-        return next(new OperationalError("Product you are trying to remove does not exist",400));
+        return next(new OperationalError("Product you are trying to remove does not exist",404));
     }
 
     if(store && productExist){
@@ -106,7 +106,7 @@ exports.getItems = async (req,res,next,Model)=>{
     });
 
     if(!store|| store.products.length === 0){
-        return next(new OperationalError("You do not have any item(s) in here",400));
+        return next(new OperationalError("You do not have any item(s) in here",404));
     }
     
     let products = store.products;

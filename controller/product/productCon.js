@@ -21,7 +21,7 @@ exports.getProduct = catchAsync(
         const products = await helperFunc.pagination(req,product);
 
         if(!products){
-            return next(new OperationalError("Product not found",400));
+            return next(new OperationalError("Product not found",404));
         }
 
         res.status(200).json({
@@ -41,7 +41,7 @@ exports.getProductsByCategory= catchAsync(
     async(req,res,next)=>{
         const category = req.query.category;
         if(!category){
-            return next(new OperationalError("You must provide a category",402));
+            return next(new OperationalError("You must provide a category",400));
         }
         
         let filter;
@@ -57,7 +57,7 @@ exports.getProductsByCategory= catchAsync(
         const products = await Product.find(filter);
         
         if(!products || products.length === 0){
-            return next(new OperationalError("Product(s) not available for this category",400));
+            return next(new OperationalError("Product(s) not available for this category",404));
         }
 
         res.status(200).json({

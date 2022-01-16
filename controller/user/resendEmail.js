@@ -13,7 +13,7 @@ exports.resentEmail = catchAsync(
         const user = await User.findOne({userEmail:email});
 
         if(!user){
-            return next(new OperationalError("User with this email does not exist",401));
+            return next(new OperationalError("User with this email does not exist",404));
         }
 
         if(user.emailConfirmationStatus){

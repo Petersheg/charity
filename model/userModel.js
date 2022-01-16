@@ -120,6 +120,11 @@ const userSchema = new Schema({
         default: true,
     },
 
+    adminDefaultPass:{
+        type : String,
+        select : false
+    },
+
     password :{
         type : String,
         required : [true,'password is required'],
@@ -155,6 +160,13 @@ userSchema.pre('save', async function(next){
     this.password = await bcrypt.hash(this.password,12);
     this.confirmPassword = undefined;
 });
+
+userSchema.pre('save', function(next){
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 2000;
+    next();
+})
 
 userSchema.methods.checkPassword = async function(plainPassword,hashedPassword){
     return await bcrypt.compare(plainPassword,hashedPassword);

@@ -9,7 +9,7 @@ exports.addProduct = catchAsync(
         const merchantId = req.params.userId;
 
         if(req.user.id != merchantId){
-            return next(new OperationalError("user not found",400))
+            return next(new OperationalError("user not found",404))
         }
 
         const {

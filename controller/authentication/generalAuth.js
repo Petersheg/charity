@@ -16,6 +16,11 @@ exports.signUp = async (req,res,next,fieldsArr,role)=>{
     // create new user
     const user = await  User.create(allowFields);
 
+    // set default password for new admin
+    if(req.originalUrl.includes('/add_admin')){
+        user.adminDefaultPass = req.body.password;
+    }
+
     helperFunction.changeUserRole(req,user,role);
 
     const emailStatus = await helperFunction.sendVerificationEmail(req,user);
@@ -34,11 +39,11 @@ exports.updateSelf = async(req,res,next)=>{
     const user = req.user;
 
     if(userId != user._id){
-        return next(new OperationalError("user not found",400));
+        return next(new OperationalError("user not found",404));
     }
 
     if(req.body.password || req.body.confirmPassword){
-        return next(new OperationalError("You can not update your password using this route"));
+        return next(new OperationalError("You can not update your password using this route",406));
     }
 
     const toUpdate = _.pick(
@@ -119,7 +124,7 @@ exports.login = async (req,res,next) => {
 
     // Check if both email and password are provided
     if(!email || !password){
-        return next(new OperationalError('Email and Password must be provided',401));
+        return next(new OperationalError('Email and Password must be provided',400));
     };
 
     // If password and email is provided, fetch user and vet password
@@ -147,12 +152,12 @@ exports.forgotPassword = async (req, res, next) => {
     // Fetch user with the provided email
     const user = await User.findOne({ userEmail: req.body.email});
     if(!user){
-        return next(new OperationalError('User not found',401));
+        return next(new OperationalError('User not found',400));
     };
 
     // if account is registered with oAuth return error
     if(user.modeOfRegistration === 'oAuth'){
-        return next(new OperationalError('Your mode of registration do not support this operation',401));
+        return next(new OperationalError('Your mode of registration do not support this operation',400));
     };
 
     // set password reset Token
@@ -258,18 +263,18 @@ exports.updatePassword = async(req,res,next)=>{
 
     // if account is registered with oAuth return error
     if(currentUser.modeOfRegistration === 'oAuth'){
-        return next(new OperationalError('Your mode of registration do not support this operation',401));
+        return next(new OperationalError('Your mode of registration do not support this operation',400));
     };
 
     if(currentPassword === "" || !currentPassword){
-        return next(new OperationalError("current password is required"));
+        return next(new OperationalError("current password is required",400));
     }
 
     // Check if current password is correct
     let checkPassword = await currentUser.checkPassword(currentPassword,currentUser.password);
 
     if(!checkPassword){
-        return next(new OperationalError("Invalid current password"));
+        return next(new OperationalError("Invalid current password",400));
     }
 
     currentUser.password = password,
@@ -279,5 +284,5 @@ exports.updatePassword = async(req,res,next)=>{
     res.status(200).json({
         status : "success",
         message: "password changed successfully"
-    })
+    });
 }

@@ -2,13 +2,13 @@ const OperationalError = require('../../utility/operationalError');
 
 const handleDuplicateKeys = (err)=>{
     const duplicateField = Object.keys(err.keyValue)[0];
-    return new OperationalError( `${err.keyValue[duplicateField]} already exist in the database` ,401);
+    return new OperationalError( `${err.keyValue[duplicateField]} already exist in the database` ,400);
 }
 
 const handleValidatorError = (err) =>{
     const field = Object.keys(err.errors)[0];
     const message = err.errors[field].properties?.message;
-    return new OperationalError(message,401);
+    return new OperationalError(message,500);
 }
 
 const handleJWTError = (err) => {
@@ -20,7 +20,7 @@ const handleJWTExpiredError = (err) => {
 }
 
 const handleMulterError = (err) => {
-    return new OperationalError(err.message,401);
+    return new OperationalError(err.message,400);
 }
 
 const handleCastError = (err)=>{

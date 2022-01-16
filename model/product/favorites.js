@@ -18,7 +18,8 @@ const favoritesSchema = new mongoose.Schema({
     user : {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, "User is required"]
+        required: [true, "User is required"],
+        unique : true
     }
 });
 
