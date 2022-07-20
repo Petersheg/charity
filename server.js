@@ -11,7 +11,6 @@ if (process.env.NODE_ENV === "development") {
 }else{
     DB_CONNECT = process.env.DB_ATLAST
     .replace(`<PASSWORD>`,process.env.DB_PASS)
-    .replace(`<DB_NAME>`,process.env.DB_NAME);
 }
 
 const options = {
