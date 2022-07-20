@@ -26,7 +26,7 @@ exports.signUp = async (req,res,next,fieldsArr,role)=>{
     const emailStatus = await helperFunction.sendVerificationEmail(req,user);
     await user.save();
     if(emailStatus === "sent"){
-        let message = 'registration successful, kindly check your email for next step';
+        let message = 'registration successful, kindly login with your email and password';
         helperFunction.generateTokenAndUserData(200,user,res,message);
     }else{
         return next(new OperationalError('Something went wrong, kindly try again',500));

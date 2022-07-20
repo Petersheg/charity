@@ -7,8 +7,7 @@ exports.userSignUp = catchAsync(
     async (req,res,next)=>{
 
         // select only data needed to be saved to the database.
-        const fieldsArr = ['userFullName','userEmail','userName','userMobile','userFirstAddress',
-            'userSecondAddress','userState','userCity','password','confirmPassword'];
+        const fieldsArr = ['userEmail','userName','password','confirmPassword'];
 
         await user.signUp(req,res,next,fieldsArr);
     }

@@ -107,13 +107,13 @@ class Helper{
 
         try{
 
-            // if(process.env.NODE_ENV === "development"){
-            //     // Send to a mail trap
-            //     sentStatus = await sendEmail({
-            //         email : user.userEmail,
-            //         subject : 'Activate your Email (Expires After 30 minutes)',
-            //         html
-            //     });
+            // if(process.env.NODE_ENV){
+                // Send to a mail trap
+                // sentStatus = await sendEmail({
+                //     email : user.userEmail,
+                //     subject : 'Activate your Email (Expires After 30 minutes)',
+                //     html
+                // });
                 
             // }else{
             //     // send to actual mail
@@ -123,9 +123,8 @@ class Helper{
             //         html
             //     });
     
-            // }
-
             return sentStatus = 'sent';
+            //}
 
         }catch(err){
             console.log(`Sending email fail ${err.message}`);

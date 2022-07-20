@@ -18,19 +18,20 @@ const userSchema = new Schema({
     userName : {
         type : String,
         minLength : [5,'User name must have at least 5 characters'],
+        required: [true, 'You must provide a user name'],
+
         trim: true
     },
 
     userFullName : {
         type : String,
-        required: [true, 'You must provide your full name'],
+        // required: [true, 'You must provide your full name'],
         minLength : [5,'User name must have at least 5 characters'],
         trim: true
     },
 
     userMobile : {
         type :Number,
-        required : [true, 'You must provide a mobile number'],
         min : [11, 'Mobile Number must contain at least 11 characters']
     },
 
@@ -43,7 +44,7 @@ const userSchema = new Schema({
     userFirstAddress : {
         type: String,
         trim: true,
-        required: [true, 'You must provide an address'],
+        // required: [true, 'You must provide an address'],
     },
 
     userSecondAddress: {
