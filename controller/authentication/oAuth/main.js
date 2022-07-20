@@ -26,6 +26,7 @@ exports.googleOAuth2 = catchAsync(
          // Autogenerate userName
          userName = email.split('@')[0];
          // check if user already exists
+        //  Comment here
          findUser = await User.findOne({userEmail: email});
 
         if(findUser){
